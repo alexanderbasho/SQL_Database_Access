@@ -1,0 +1,103 @@
+-- Creating Modules Table
+CREATE TABLE Modules (
+    ModuleCode varchar(20),
+    ModuleTitle varchar(30),
+    PRIMARY KEY (ModuleCode)
+);
+
+-- Creating SessionType Table
+CREATE TABLE SessionType (
+    SessionTypeID varchar(20),
+    Description varchar(50), 
+    CONSTRAINT PK_SESSIONTYPE PRIMARY KEY (Description, SessionTypeID)
+);
+
+
+-- Creating Sessions Table
+CREATE TABLE Sessions (
+    SessionID varchar(20),
+    SessionType varchar(30), -- Foreign key. Create combobox in access.
+    Time varchar(20),
+    Duration varchar(20),
+    Room varchar(20),
+    DayOfWeek varchar(15),
+    ModuleCode varchar(20),
+    FOREIGN KEY (ModuleCode) REFERENCES Modules(ModuleCode),
+    FOREIGN KEY (SessionType) REFERENCES SessionType(Description),
+    PRIMARY KEY (SessionID)
+);
+
+
+-- Creating Assessments Table
+CREATE TABLE Assessments (
+    AssessmentTitle varchar(20), -- Foreign key. Create combobox in access.
+    DeadlineDate varchar(20), 
+    Description varchar(50),
+    DeadlineTime varchar(20),
+    ModuleCode varchar(20),
+    FOREIGN KEY (ModuleCode) REFERENCES Modules(ModuleCode),
+    CONSTRAINT PK_ASSESSMENTS PRIMARY KEY (AssessmentTitle, ModuleCode)
+);
+
+-- Creating ScheduleItems Table
+CREATE TABLE ScheduleItems (
+    ScheduleItemID varchar(20),
+    Description varchar(50),
+    Duration varchar(20),
+    Date varchar(20), 
+    Time varchar(20),   
+    CONSTRAINT PK_SCHEDULEITEM PRIMARY KEY (ScheduleItemID)
+);
+
+
+-- Creating ModuleLeaders Table
+CREATE TABLE ModuleLeaders (
+    ModuleLeaderID int auto_increment,
+    Name varchar(20),
+    Email varchar(40),
+    OfficeNumber varchar(20),
+    OfficeHours varchar(20),
+    OfficeTelephoneNumber varchar(20),
+    ModuleCode varchar(20),
+    FOREIGN KEY (ModuleCode) REFERENCES Modules(ModuleCode),
+    CONSTRAINT PK_MODULELEADERS PRIMARY KEY (ModuleLeaderID,Name)
+);
+
+-- Creating Tutors Table
+CREATE TABLE Tutors (
+    TutorID int auto_increment,
+    Name varchar(20),
+    Email varchar(40),
+    OfficeNumber varchar(20),
+    ModuleCode varchar(20),
+    FOREIGN KEY (ModuleCode) REFERENCES Modules(ModuleCode),
+    CONSTRAINT PK_Tutors PRIMARY KEY (TutorID,Name)
+);
+
+-- Creating Studets Table
+CREATE TABLE Students (
+    StudentID varchar(20),
+    Password varchar(20),
+    ScheduleItem varchar(20),
+    FOREIGN KEY (ScheduleItem) REFERENCES ScheduleItems(ScheduleItemID),
+    CONSTRAINT PK_Students PRIMARY KEY (StudentID,ScheduleItem)
+);
+
+-- Creating Tutorials Table
+CREATE TABLE Tutorials (
+    SessionID varchar(20),
+    FOREIGN KEY (SessionID) REFERENCES Sessions(SessionID),
+    StudentID varchar(20), 
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    CONSTRAINT PK_Tutorials PRIMARY KEY (SessionID,StudentID)
+);
+
+-- Creating Enrolment Table
+CREATE TABLE Enrolment (
+    ModuleCode varchar(20),
+    FOREIGN KEY (ModuleCode) REFERENCES Modules(ModuleCode),
+    StudentID varchar(20), 
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    CONSTRAINT PK_Enrolment PRIMARY KEY (ModuleCode,StudentID)
+);
+
